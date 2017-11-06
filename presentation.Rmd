@@ -1,0 +1,81 @@
+---
+title: "VU BI2 - Exercise 1: Olympics Data"
+author: "Asil Cetin / 01100130"
+date: "6/11/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+# Load the data
+load("OlympicsData.RData")
+# Attach the data
+attach(OlympicsData)
+# Reorder the data based on BordaPoints
+OlympicsData <- OlympicsData[order(-BordaPoints),]
+# Get the top ten most successful countries into a dataset
+TopTenCountries = OlympicsData[1:10,]
+# Get the top ten most successful countries into a dataset
+BottomTenCountries <- OlympicsData[order(BordaPoints),]
+BottomTenCountries = BottomTenCountries[1:10,]
+# Get countries with at least 1 Borda Point
+BordaCountries = OlympicsData[1:85,]
+```
+
+## Data Description
+
+In this exercise we are investigating a dat set from London 2012 Olympics. The data set gives the names of the 203 participating countries as well as the number of gold, silver and bronze medals won by country, the total number of medals won by country, the Borda points by country, income per capita (in $1.000), population size (in 1.000.000), gross domestic product (GDP= income per capita multiplied by population size) and the polynomial variables of income per capita squared, population size squared, income per capita cubed, population size cubed, gross domestic product squared, gross domestic product cubed, natural log of income per capita, natural log of population size, and natural log of GDP.
+
+## Analysis Questions
+
+We are mainly interested in the corelation between the overall success in London 2012 Olympics - which is represented in the parameter "BordaPoints", since it ranks the countries weighted on the value of different medals - and the population and income levels of a given country.
+
+Thus our first analysis question can be stated as:
+
+**What is the effect of population size and income of a country on success in the London 2012 Olympics?**
+
+Possibly our investigation can reveal that our data set may be expanded with further parameters about the countries for us to arrive to better conclusions. In this case our second analysis question can be:
+
+**If population size and income are not enough to explain the success in olympics, what other measurable metrics can be added to the data?**
+
+## Population and Success
+
+```{r echo=FALSE}
+plot(`Ln(PopnSize)`, BordaPoints, main="Distribution of Borda Points by Population (ln)", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+```
+
+Population and success at the olympics don't show a strict correlation at the first glance. 
+
+However one should not forget that we we observe many countries - with big and small populations - having no success (0 Borda Points), which may hinder us coming to effective conclusions.
+
+How would the same graphic look, if we only take countries with at least 1 Borda Point into account? This may be a better comparision since those are the countries which showed at least a minimal level of competitive participance in the events.
+
+```{r echo=FALSE}
+plot(BordaCountries$`Ln(PopnSize)`, BordaCountries$BordaPoints, main="Distribution of Borda Points by Population (ln) of Countries at least 1 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+```
+
+## Income and Success
+
+```{r echo=FALSE}
+plot(`Ln(GDP)`, BordaPoints, main="Distribution of Borda Points by GDP (ln)", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+```
+
+
+
+```{r echo=FALSE}
+plot(BordaCountries$`Ln(GDP)`, BordaCountries$BordaPoints, main="Distribution of Borda Points by GDP (ln) of Countries at least 1 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+```
+
+## Top and Bottom Countries and Averages
+
+```{r}
+mean(TopTenCountries$Popsize)
+```
+
+```{r}
+mean(BottomTenCountries$Popsize)
+```
+
