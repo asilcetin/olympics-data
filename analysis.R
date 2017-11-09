@@ -5,6 +5,8 @@
 attach(OlympicsData)
 # Reorder the data based on BordaPoints
 OlympicsData = OlympicsData[order(-BordaPoints),] 
+# Add new variable: Combination of Ln(PopSize)+(Ln(Income)
+OlympicsData$CombinedVarPopInc <- `Ln(PopnSize)` + `Ln(Income)`
 # Get the top fifty most successful countries into a dataset
 TopFiftyCountries = OlympicsData[1:50,]
 # Get the top fifty most successful countries into a dataset
@@ -26,12 +28,26 @@ AllIncomeSum = summary(OlympicsData[,c('Income')])
 TopFiftyIncomeSum = summary(TopFiftyCountries[,c('Income')])
 # Get the summary of bottom 50 countries income
 BottomFiftyIncomeSum = summary(BottomFiftyCountries[,c('Income')])
+# Get the summary of all countries income & popsize
+AllWorldSum = summary(OlympicsData[,c('Income', 'Popsize')])
+# Pakistan's summary
+PakistanSum = OlympicsData[Country == "Pakistan",c('BordaPoints', 'Popsize', 'Income')]
+row.names(PakistanSum) <- "Pakistan"
 # Nigeria's summary
 NigeriaSum = OlympicsData[Country == "Nigeria",c('BordaPoints', 'Popsize', 'Income')]
 row.names(NigeriaSum) <- "Nigeria"
-
-# Combination of Ln(PopSize)+(Ln(Income)
-OlympicsData$CombineParsPopInc <- `Ln(PopnSize)` + `Ln(Income)`
+# Monaco's summary
+MonacoSum = OlympicsData[Country == "Monaco",c('BordaPoints', 'Popsize', 'Income')]
+row.names(MonacoSum) <- "Monaco"
+# Liechtenstein's summary
+LiechtensteinSum = OlympicsData[Country == "Liechtenstein",c('BordaPoints', 'Popsize', 'Income')]
+row.names(LiechtensteinSum) <- "Liechtenstein"
+# Ethiopia's summary
+EthiopiaSum = OlympicsData[Country == "Ethiopia",c('BordaPoints', 'Popsize', 'Income')]
+row.names(EthiopiaSum) <- "Ethiopia"
+# Ethiopia's summary
+JamaicaSum = OlympicsData[Country == "Jamaica",c('BordaPoints', 'Popsize', 'Income')]
+row.names(JamaicaSum) <- "Jamaica"
 
 # Distribution of Borda Points by Population (ln)
 plot(`Ln(PopnSize)`, BordaPoints, main="Distribution of Borda Points by Population (ln)", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
