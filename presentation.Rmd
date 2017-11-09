@@ -11,18 +11,54 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r include=FALSE}
 # Load the data
-load("OlympicsData.RData")
+load("olympics-data.RData")
 # Attach the data
 attach(OlympicsData)
 # Reorder the data based on BordaPoints
-OlympicsData <- OlympicsData[order(-BordaPoints),]
-# Get the top ten most successful countries into a dataset
-TopTenCountries = OlympicsData[1:10,]
-# Get the top ten most successful countries into a dataset
-BottomTenCountries <- OlympicsData[order(BordaPoints),]
-BottomTenCountries = BottomTenCountries[1:10,]
+OlympicsData = OlympicsData[order(-BordaPoints),] 
+# Add new variable: Combination of Ln(PopSize)+(Ln(Income)
+OlympicsData$CombinedVarPopInc <- `Ln(PopnSize)` + `Ln(Income)`
+# Get the top fifty most successful countries into a dataset
+TopFiftyCountries = OlympicsData[1:50,]
+# Get the top fifty most successful countries into a dataset
+BottomFiftyCountries = OlympicsData[order(BordaPoints),]
+BottomFiftyCountries = BottomFiftyCountries[1:50,]
 # Get countries with at least 1 Borda Point
-BordaCountries = OlympicsData[1:85,]
+OneBordaCountries = OlympicsData[BordaPoints>0,]
+# Get countries with at least 5 Borda Points
+FiveBordaCountries = OlympicsData[BordaPoints>4,]
+# Get the summary of all countries popsize
+AllPopsizeSum = summary(OlympicsData[,c('Popsize')])
+# Get the summary of top 50 countries popsize
+TopFiftyPopsizeSum = summary(TopFiftyCountries[,c('Popsize')])
+# Get the summary of bottom 50 countries popsize
+BottomFiftyPopsizeSum = summary(BottomFiftyCountries[,c('Popsize')])
+# Get the summary of all countries income
+AllIncomeSum = summary(OlympicsData[,c('Income')])
+# Get the summary of top 50 countries income
+TopFiftyIncomeSum = summary(TopFiftyCountries[,c('Income')])
+# Get the summary of bottom 50 countries income
+BottomFiftyIncomeSum = summary(BottomFiftyCountries[,c('Income')])
+# Get the summary of all countries income & popsize
+AllWorldSum = summary(OlympicsData[,c('Income', 'Popsize')])
+# Pakistan's summary
+PakistanSum = OlympicsData[Country == "Pakistan",c('BordaPoints', 'Popsize', 'Income')]
+row.names(PakistanSum) <- "Pakistan"
+# Nigeria's summary
+NigeriaSum = OlympicsData[Country == "Nigeria",c('BordaPoints', 'Popsize', 'Income')]
+row.names(NigeriaSum) <- "Nigeria"
+# Monaco's summary
+MonacoSum = OlympicsData[Country == "Monaco",c('BordaPoints', 'Popsize', 'Income')]
+row.names(MonacoSum) <- "Monaco"
+# Liechtenstein's summary
+LiechtensteinSum = OlympicsData[Country == "Liechtenstein",c('BordaPoints', 'Popsize', 'Income')]
+row.names(LiechtensteinSum) <- "Liechtenstein"
+# Ethiopia's summary
+EthiopiaSum = OlympicsData[Country == "Ethiopia",c('BordaPoints', 'Popsize', 'Income')]
+row.names(EthiopiaSum) <- "Ethiopia"
+# Ethiopia's summary
+JamaicaSum = OlympicsData[Country == "Jamaica",c('BordaPoints', 'Popsize', 'Income')]
+row.names(JamaicaSum) <- "Jamaica"
 ```
 
 ## Data Description
@@ -35,47 +71,158 @@ We are mainly interested in the corelation between the overall success in London
 
 Thus our first analysis question can be stated as:
 
-**What is the effect of population size and income of a country on success in the London 2012 Olympics?**
+**Do parameters of population size and income have any effect on success in the London 2012 Olympics?**
 
-Possibly our investigation can reveal that our data set may be expanded with further parameters about the countries for us to arrive to better conclusions. In this case our second analysis question can be:
+After investigating the possible correlations between olympic success and parameters of population size and income, we would want to know to what degree these parameters have an effect. Thus our second question would be:
 
-**If population size and income are not enough to explain the success in olympics, what other measurable metrics can be added to the data?**
+**If population size and income has an effect on olympic success, what are the factoring weights of these parameters?**
 
 ## Population and Success
 
+First parameter we want to analyse is the population. Here we will use the natural logarithm of population size (in 1.000.000) since it's preferred to naturalize the enourmous population size differences between some contries.
+
+The plot of all participating countries in the 2012 London Olympics looks like as follows:
+
 ```{r echo=FALSE}
 plot(`Ln(PopnSize)`, BordaPoints, main="Distribution of Borda Points by Population (ln)", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(BordaPoints ~ `Ln(PopnSize)`), col = 4)
 ```
 
 Population and success at the olympics don't show a strict correlation at the first glance. 
 
 However one should not forget that we we observe many countries - with big and small populations - having no success (0 Borda Points), which may hinder us coming to effective conclusions.
 
-How would the same graphic look, if we only take countries with at least 1 Borda Point into account? This may be a better comparision since those are the countries which showed at least a minimal level of competitive participance in the events.
+How would the same graphic look, if we only take countries with at least 1 Borda Point into account? This may be a better comparision since those are the countries which showed at least a minimal level of competitive participance in the events. The following plot depicts those countries with at least 1 Borda Point:
 
 ```{r echo=FALSE}
-plot(BordaCountries$`Ln(PopnSize)`, BordaCountries$BordaPoints, main="Distribution of Borda Points by Population (ln) of Countries at least 1 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+plot(OneBordaCountries$`Ln(PopnSize)`, OneBordaCountries$BordaPoints, main="Distribution of Borda Points by Population (ln) of Countries at least 1 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(OneBordaCountries$BordaPoints ~ OneBordaCountries$`Ln(PopnSize)`), col = 4)
+```
+
+If we would like to further increase our minimal requirement of Borda Points from 1 upto 5, it might be argued that this would lead to a more precise analysis, since getting one Borda Point is done by only one bronze medal, which would be too small of a difference between 0 and 1 Borda Point countries. The new plot would look like the following:
+
+```{r echo=FALSE}
+plot(FiveBordaCountries$`Ln(PopnSize)`, FiveBordaCountries$BordaPoints, main="Distribution of Borda Points by Population (ln) of Countries at least 5 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(FiveBordaCountries$BordaPoints ~ FiveBordaCountries$`Ln(PopnSize)`), col = 4)
 ```
 
 ## Income and Success
+Second parameter we want to analyse is the level of income Here we will use the natural logarithm of income per capita (in $1.000) since it's preferred to naturalize the enourmous income size differences between some contries. Moreover income per capita paramater is preferred over GDP of a country, because we're interested in individuals' financial oppurtunities rather than a countries total production.
+
+The plot of all participating countries in the 2012 London Olympics looks like as follows:
 
 ```{r echo=FALSE}
-plot(`Ln(GDP)`, BordaPoints, main="Distribution of Borda Points by GDP (ln)", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+plot(`Ln(Income)`, BordaPoints, main="Distribution of Borda Points by Income (ln)", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(BordaPoints ~ `Ln(Income)`), col = 4)
 ```
 
+Similar to the first plot of population size vs. success, this plot doesn't represent a direct correlation due to a high number of countries with 0 Borda Points. Let's increase our Borda Point requirement to at least one and than to five points:
+
+```{r echo=FALSE}
+plot(OneBordaCountries$`Ln(Income)`, OneBordaCountries$BordaPoints, main="Distribution of Borda Points by Income (ln) of Countries at least 1 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(OneBordaCountries$BordaPoints ~ OneBordaCountries$`Ln(Income)`), col = 4)
+```
 
 
 ```{r echo=FALSE}
-plot(BordaCountries$`Ln(GDP)`, BordaCountries$BordaPoints, main="Distribution of Borda Points by GDP (ln) of Countries at least 1 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+plot(FiveBordaCountries$`Ln(Income)`, FiveBordaCountries$BordaPoints, main="Distribution of Borda Points by Income (ln) of Countries at least 5 Borda Point", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(FiveBordaCountries$BordaPoints ~ FiveBordaCountries$`Ln(Income)`), col = 4)
 ```
 
-## Top and Bottom Countries and Averages
+Our first descriptive analysis on both income and population have shown a certain degree of correlation with success, especially after restricting our data to countries which have achieved at least minimal level of medals in the competitions.
 
-```{r}
-mean(TopTenCountries$Popsize)
+## Top 50 and Bottom 50 Countries and Averages
+
+In this section we'd like to compare the summaries of (1) all participating countries, (2) top-50 countries by Borda Points and (3) bottom-50 countries by Borda Points.
+
+First parameter to be analysed is the population size (in in 1.000.000):
+
+Summary of all countries' population size:
+```{r echo=FALSE}
+AllPopsizeSum
 ```
 
-```{r}
-mean(BottomTenCountries$Popsize)
+Summary of top-50 countries' population size:
+```{r echo=FALSE}
+TopFiftyPopsizeSum
 ```
 
+Summary of bottom-50 countries' population size:
+```{r echo=FALSE}
+BottomFiftyPopsizeSum
+```
+
+
+Second parameter we like to analyse in the same matter is the income per capita (in $1.000):
+
+Summary of all countries' income per capita:
+```{r echo=FALSE}
+AllIncomeSum
+```
+
+Summary of top-50 countries' income per capita:
+```{r echo=FALSE}
+TopFiftyIncomeSum
+```
+
+Summary of bottom-50 countries' income per capita:
+```{r echo=FALSE}
+BottomFiftyIncomeSum
+```
+
+## Combining Population Size and Income Parameters
+On our plots we see some countries as obvious exceptions which are over- or underperforming in comparison to ther population or income level parameters. Some examples for those countries are:
+
+Averages of all participating countries as a reference:
+```{r echo=FALSE}
+AllWorldSum
+```
+
+Pakistan, 7th most populus country in the world:
+```{r echo=FALSE}
+PakistanSum
+```
+
+Nigeria, 8th most populus country in the world:
+```{r echo=FALSE}
+NigeriaSum
+```
+
+Monaco, 1st highest income country in the world:
+```{r echo=FALSE}
+MonacoSum
+```
+
+Liechtenstein, 2nd highest income country in the world:
+```{r echo=FALSE}
+LiechtensteinSum
+```
+
+Jamaica, 138th most populus country in the world:
+```{r echo=FALSE}
+JamaicaSum
+```
+
+Ethiopia, 6th lowest income country in the world:
+```{r echo=FALSE}
+EthiopiaSum
+```
+
+
+Answering the second question of our analysis may help us to combine population size and income parameters with correct weights and coming up with a fitting regression model can help us explain these inconsistencies.
+
+An experimental plot to combine these to parameters and create a better correlation would be:
+
+```{r echo=FALSE}
+plot(FiveBordaCountries$CombinedVarPopInc, FiveBordaCountries$BordaPoints, main="Distribution of Borda Points by Ln(PopSize)+(Ln(Income) where a country has >=5 Borda Points", cex=0.5, cex.main=0.5, cex.lab=0.5, cex.axis=0.5, font.main=4, font.lab=2, font.axis=3, col=3, pch=1)
+abline(lm(FiveBordaCountries$BordaPoints ~FiveBordaCountries$ CombinedVarPopInc), col = 4)
+```
+
+
+## Summary
+After our analysis it can be argued that the population size and income per capita parameters of a country have an obvious effect on the countries' success in olympics. However as in many socioeconomic topics only two parameters cannot directly explain an outcome in every case. It's obvious that there are many exceptions or extreme cases where one of the parameters or both of them show a contrary relationship with the success in olympics. Thus it can be stated that there is still enough room for further exploration in this analysis.
+
+## Further Investigation
+Our investigation reveals that the data set may possibly be expanded with further parameters about the countries for us to arrive at better conclusions. In this case our further analysis question could be:
+
+**If population size and income are not fully enough to predict the success in olympics, what other measurable metrics can be added to the data to explain the olympics success more precisely?**
