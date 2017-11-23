@@ -90,7 +90,7 @@ Changes made in this version are:
 
 ## Data Description
 
-In this exercise we are investigating a dat set from London 2012 Olympics. The data set gives the names of the 203 participating countries as well as the number of gold, silver and bronze medals won by country, the total number of medals won by country, the Borda points by country, income per capita (in $1.000), population size (in 1.000.000), gross domestic product (GDP= income per capita multiplied by population size) and the polynomial variables of income per capita squared, population size squared, income per capita cubed, population size cubed, gross domestic product squared, gross domestic product cubed, natural log of income per capita, natural log of population size, and natural log of GDP.
+In this exercise we are investigating a data set from London 2012 Olympics. The data set gives the names of the 203 participating countries as well as the number of gold, silver and bronze medals won by country, the total number of medals won by country, the Borda points by country, income per capita (in $1.000), population size (in 1.000.000), gross domestic product (GDP= income per capita multiplied by population size) and the polynomial variables of income per capita squared, population size squared, income per capita cubed, population size cubed, gross domestic product squared, gross domestic product cubed, natural log of income per capita, natural log of population size, and natural log of GDP.
 
 ## Analysis Questions
 
@@ -133,9 +133,9 @@ cor.test(FBC$`Ln(PopnSize)`, FBC$BordaPoints)
 ```
 
 ## Borda Points, an Accurate Parameter for Success?
-One might as if Borda points method deliver an accurate representation for the success in olympics. First it may be useful to explain the method of calculation for Borda points:
+One might ask if Borda points method can deliver an accurate representation for the success in olympics. First it may be useful to explain the method of calculation for Borda points:
 
-For each medal in the olympics a value for Borda points is defined to have different weights for different medals. Thus for gold medals three (3) Borda points are given, for silver two (2) and for bronze one (1) Borda points are added to the sums of countries.
+For each medal in the olympics a value for Borda points is defined to have different weights for different medals. Thus for gold medals three (3) Borda points are given, for silver two (2) and for bronze one (1) Borda point is added to the sums of countries.
 
 Let's look at the relationship between total medals gained in olympics and their respective Borda point calculations:
 
