@@ -20,7 +20,7 @@ OlympicsData = OlympicsData[order(-BordaPoints),]
 OlympicsData$CombinedVarPopInc <- `Ln(PopnSize)` + `Ln(Income)`
 # Get the top fifty most successful countries into a dataset
 TopFiftyCountries = OlympicsData[1:50,]
-# Get the top fifty most successful countries into a dataset
+# Get the bottom fifty least successful countries into a dataset
 BottomFiftyCountries = OlympicsData[order(BordaPoints),]
 BottomFiftyCountries = BottomFiftyCountries[1:50,]
 # Get countries with at least 1 Borda Point
